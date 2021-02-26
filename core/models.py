@@ -24,9 +24,14 @@ class Montadora(models.Model):
         return self.nome
 
 
+def set_default_montadora(self) -> object:
+    return Montadora.objects.get_or_create(nome="Padrão")[0]  # get_or_create retorna um objeto e um boolean
+
+
 class Carro(models.Model):
     chassi = models.OneToOneField(Chassi, on_delete=models.CASCADE)
-    montadora = models.ForeignKey(Montadora, on_delete=models.CASCADE)  # um para muitos não fica explícito
+    # montadora = models.ForeignKey(Montadora, on_delete=models.CASCADE)  # um para muitos não fica explícito
+    montadora = models.ForeignKey(Montadora, on_delete=models.SET(set_default_montadora))  # on_delete usando SET
     modelo = models.CharField('Modelo', max_length=30)
     preco = models.DecimalField('Preço', max_digits=8, decimal_places=2)
     motoristas = models.ManyToManyField(get_user_model())
